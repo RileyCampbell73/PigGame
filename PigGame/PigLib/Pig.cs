@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace PigLib
 {
-    public class PigLib
+    public interface IPig
     {
+
+    }
+
+    public class Pig : IPig
+    {
+
     }
 }
