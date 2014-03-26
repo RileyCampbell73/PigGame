@@ -26,7 +26,7 @@ namespace PigService
                 servHost.Open();
 
                 // Keep the service running until <Enter> is pressed
-                Console.WriteLine("Shoe service is activated, Press <Enter> to quit.");
+                Console.WriteLine("Pig Game service is activated, Press <Enter> to quit.");
                 Console.ReadKey();
 
                 // Shut down the service
