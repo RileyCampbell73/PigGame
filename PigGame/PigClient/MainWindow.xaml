@@ -1,7 +1,7 @@
 ﻿<Window x:Class="PigClient.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Pig Game!" Height="500" Width="600">
+        Title="Pig Game!" Height="500" Width="600" Closing="Window_Closing">
     <Grid>
         <Image x:Name="imgDie" HorizontalAlignment="Left" Height="100" Margin="246,146,0,0" VerticalAlignment="Top" Width="100"/>
         <GroupBox x:Name="groupBoxPlayer2" Header="Player 2" HorizontalAlignment="Left" Margin="47,112,0,0" VerticalAlignment="Top" Height="78" Width="122">

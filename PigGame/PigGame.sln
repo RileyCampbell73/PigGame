@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PigLib", "PigLib\PigLib.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PigClient", "PigClient\PigClient.csproj", "{C1163FC2-8E70-49DF-93CC-8CC16DD17C99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PigService", "PigService\PigService.csproj", "{4B288F7A-A8A4-4F96-93E8-517345C30FB4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PigServer", "PigServer\PigServer.csproj", "{E6D4F553-3150-43D6-A102-B09C7D0BF23D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,10 @@ Global
 		{C1163FC2-8E70-49DF-93CC-8CC16DD17C99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1163FC2-8E70-49DF-93CC-8CC16DD17C99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1163FC2-8E70-49DF-93CC-8CC16DD17C99}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4B288F7A-A8A4-4F96-93E8-517345C30FB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4B288F7A-A8A4-4F96-93E8-517345C30FB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4B288F7A-A8A4-4F96-93E8-517345C30FB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4B288F7A-A8A4-4F96-93E8-517345C30FB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6D4F553-3150-43D6-A102-B09C7D0BF23D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6D4F553-3150-43D6-A102-B09C7D0BF23D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6D4F553-3150-43D6-A102-B09C7D0BF23D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6D4F553-3150-43D6-A102-B09C7D0BF23D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
