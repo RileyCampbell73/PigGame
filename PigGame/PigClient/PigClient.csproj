@@ -41,6 +41,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Printing" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -107,6 +108,12 @@
     <Resource Include="images\die_six.gif" />
     <Resource Include="images\die_three.gif" />
     <Resource Include="images\die_two.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PigLib\PigLib.csproj">
+      <Project>{df6dd1a0-866c-4d4f-b022-4906e2674a12}</Project>
+      <Name>PigLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

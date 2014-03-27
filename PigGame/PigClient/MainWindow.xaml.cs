@@ -13,16 +13,59 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using System.ServiceModel;
+using PigLib;
+
 namespace PigClient
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+
+
+
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant,
+        UseSynchronizationContext = false)]
+    public partial class MainWindow : Window, ICallback
     {
+        private IPig pig = null;
+        private int callbackId = 0;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            try
+            {
+                // Configure the Endpoint details
+                DuplexChannelFactory<IPig> channel = new DuplexChannelFactory<IPig>(this, "Pig");
+
+                // Activate a remote Shoe object
+                pig = channel.CreateChannel();
+
+                // Regsister this client for the callbacks service
+                callbackId = pig.RegisterForCallbacks();
+
+
+                //updateCardCounts();
+
+                this.Title = "Hello Player " + callbackId;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (callbackId != 0 && pig != null)
+                pig.UnregisterForCallbacks(callbackId);
+        }
+
+        public void UpdateGui(CallBackInfo info)
+        {
+
         }
     }
 }
