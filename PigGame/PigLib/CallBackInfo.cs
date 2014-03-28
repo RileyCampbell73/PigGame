@@ -12,6 +12,7 @@ namespace PigLib
     [DataContract]
     public class CallBackInfo
     {
+        //might need an object with ALL player data to pass to the client. Not sure how we should approach it.
         [DataMember]
         public int DieRoll { get; private set; }
         [DataMember]

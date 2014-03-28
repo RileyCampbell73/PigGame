@@ -82,7 +82,25 @@ namespace PigClient
 
         public void UpdateGui(CallBackInfo info)
         {
-
+            //use this method to refresh everyones GUI?
+            
+            if (System.Threading.Thread.CurrentThread == this.Dispatcher.Thread)
+            {
+                try
+               {
+                    
+                    //Update code goes here
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            else
+            {
+                // Only the main (dispatcher) thread can change the GUI
+                //this.Dispatcher.BeginInvoke(new ClientUpdateDelegate(UpdateGui), info);
+            }
         }
 
         private delegate void MessageDelegate(string s);

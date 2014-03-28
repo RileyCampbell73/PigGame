@@ -31,6 +31,8 @@ namespace PigLib
         void ClientUnReady(int id);
         [OperationContract(IsOneWay = true)]
         void StartGame();
+
+        void Game();
         
     }
 
@@ -92,6 +94,8 @@ namespace PigLib
                 {
                     startGame = true;
                     SendMessage("Game Starting!");
+                    //Maybe have a method with a loop in it start from here?
+
                 }
             }
             else
@@ -110,6 +114,33 @@ namespace PigLib
                 if (id == kvp.Key || id == 0)
                     kvp.Value.ShowMessage(message); // ShowMessage written in the client
             }
+        }
+
+        //Just an idea, Not even sure this will work
+        public void Game()
+        {
+
+            //Stop more clients from connecting.
+                //OR if game has started (the bool 'startGame') then disable the ready button in the client
+                // maybe they will be all disabled by default anyway
+                
+                //pick a player to start first. or default it to player 1
+                
+                    //neverending loop here ( or until one of the players has 100 points)
+            for (; ; )
+            {
+                //Note: Not sure how to make it wait for players
+                //enable that players UI, disable the others.
+
+
+                //Then player will roll dice until stuff happens (put in its own function maybe?)
+                //When they are done, pass it to next player, end loop
+            }
+
+                    //after loop, display winner
+                    // end game, or prep for another
+
+
         }
 
     }
