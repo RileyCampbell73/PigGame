@@ -46,7 +46,6 @@ namespace PigClient
                 // Regsister this client for the callbacks service
                 callbackId = pig.RegisterForCallbacks();
 
-
                 //updateCardCounts();
 
                 this.Title = "Hello Player " + callbackId;
@@ -63,9 +62,47 @@ namespace PigClient
                 pig.UnregisterForCallbacks(callbackId);
         }
 
+        private void checkBoxReady_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                pig.ClientReady(callbackId);
+                pig.StartGame(); // send a message to the service which will check that we have enough players that are all ready
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+
+        private void checkBoxReady_Unchecked(object sender, RoutedEventArgs e)
+        {
+            pig.ClientUnReady(callbackId);
+        }
+
         public void UpdateGui(CallBackInfo info)
         {
 
+        }
+
+        private delegate void MessageDelegate(string s);
+        public void ShowMessage( string message )
+        {
+            try
+            {
+                if (System.Threading.Thread.CurrentThread == this.Dispatcher.Thread)
+                {
+                    MessageBox.Show(message);
+                }
+                else
+                {
+                    this.Dispatcher.BeginInvoke(new MessageDelegate(ShowMessage), message);
+                }
+            }
+            catch (Exception ex )
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
         }
     }
 }

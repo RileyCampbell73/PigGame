@@ -13,6 +13,8 @@ namespace PigLib
     {
         [OperationContract(IsOneWay = true)]
         void UpdateGui(CallBackInfo info);
+        [OperationContract(IsOneWay = true)]
+        void ShowMessage(string message);
         
     }
 
@@ -23,13 +25,23 @@ namespace PigLib
         int RegisterForCallbacks();
         [OperationContract(IsOneWay = true)]
         void UnregisterForCallbacks(int id);
+        [OperationContract(IsOneWay = true)]
+        void ClientReady( int id );
+        [OperationContract(IsOneWay = true)]
+        void ClientUnReady(int id);
+        [OperationContract(IsOneWay = true)]
+        void StartGame();
+        
     }
+
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class Pig : IPig
     {
         //dictionary for clients
         private Dictionary<int, ICallback> clientCallbacks = new Dictionary<int, ICallback>();
+        private Dictionary<int, bool> readyList = new Dictionary<int, bool>(); // hold the client's key and if that client is ready
         private int nextCallbackId = 1;
+        private bool startGame = false; // when all clients are ready, flip this
 
         // C'tor
         public Pig()
@@ -44,6 +56,7 @@ namespace PigLib
             // the client which is currently calling RegisterForCallbacks()
             ICallback cb = OperationContext.Current.GetCallbackChannel<ICallback>();
             clientCallbacks.Add(nextCallbackId, cb);
+            readyList.Add(nextCallbackId, false); // when they're first registered they won't be ready to start
 
             return nextCallbackId++;
         }
@@ -51,6 +64,52 @@ namespace PigLib
         public void UnregisterForCallbacks(int id)
         {
             clientCallbacks.Remove(id);
+        }
+
+        public void ClientReady( int id )
+        {
+            readyList[id] = true;
+        }
+
+        public void ClientUnReady( int id )
+        {
+            readyList[id] = false;
+        }
+
+        public void StartGame()
+        {
+            // make sure we have an appropriate amount of players
+            if( clientCallbacks.Count >= 2 && clientCallbacks.Count <= 6 )
+            {
+                int numReady = 0;
+                foreach ( bool flag in readyList.Values )
+                {
+                    if ( flag == true )
+                        numReady++;
+                }
+                // we have an appropriate amount of players, all registered, and all ready to play
+                if (numReady == clientCallbacks.Count)
+                {
+                    startGame = true;
+                    SendMessage("Game Starting!");
+                }
+            }
+            else
+            {
+                // tell the clients that there are too many or too few players
+                SendMessage("Only 2 to 6 players allowed!");
+            }
+
+        }
+
+        // this allows us to send a message to one or all clients, if the id is 0 we'll show the message to everyone
+        public void SendMessage( string message, int id = 0 )
+        {
+            foreach ( KeyValuePair<int,ICallback> kvp in clientCallbacks )
+            {
+                if (id == kvp.Key || id == 0)
+                    kvp.Value.ShowMessage(message); // ShowMessage written in the client
+            }
         }
 
     }

@@ -45,6 +45,7 @@
         <GroupBox Header="Game Log" HorizontalAlignment="Left" Margin="169,358,0,0" VerticalAlignment="Top" Height="102" Width="249">
             <TextBlock x:Name="textBlockLog" />
         </GroupBox>
+        <CheckBox x:Name="checkBoxReady" Content="Ready to start?" HorizontalAlignment="Left" Margin="436,303,0,0" VerticalAlignment="Top" Checked="checkBoxReady_Checked" Unchecked="checkBoxReady_Unchecked"/>
 
     </Grid>
 </Window>
