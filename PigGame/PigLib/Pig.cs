@@ -32,8 +32,6 @@ namespace PigLib
         void ClientUnReady(int id);
         [OperationContract(IsOneWay = true)]
         void StartGame();
-        [OperationContract(IsOneWay = true)]
-        void Game();
         
     }
 
@@ -42,11 +40,11 @@ namespace PigLib
     {
         //dictionary for clients
         private Dictionary<int, ICallback> clientCallbacks = new Dictionary<int, ICallback>();
-        private Dictionary<int, bool> readyList = new Dictionary<int, bool>(); // hold the client's key and if that client is ready
+        //private Dictionary<int, bool> readyList = new Dictionary<int, bool>(); // hold the client's key and if that client is ready
         private int nextCallbackId = 1;
         private bool startGame = false; // when all clients are ready, flip this
         //private CallBackInfo info = new CallBackInfo();
-        private Dictionary<int, CallBackInfo> info = new Dictionary<int, CallBackInfo>();
+        private Dictionary<int, CallBackInfo> clientData = new Dictionary<int, CallBackInfo>();
 
         
 
@@ -77,7 +75,9 @@ namespace PigLib
                 // the client which is currently calling RegisterForCallbacks()
                 ICallback cb = OperationContext.Current.GetCallbackChannel<ICallback>();
                 clientCallbacks.Add(nextCallbackId, cb);
-                readyList.Add(nextCallbackId, false); // when they're first registered they won't be ready to start
+                CallBackInfo info = new CallBackInfo();
+                clientData.Add(nextCallbackId, info);
+                //readyList.Add(nextCallbackId, false); // when they're first registered they won't be ready to start
 
                 return nextCallbackId++;
             }
@@ -88,12 +88,13 @@ namespace PigLib
         public void UnregisterForCallbacks(int id)
         {
             clientCallbacks.Remove(id);
+            clientData.Remove(id);
         }
 
         public void ClientReady( int id )
         {
             if (id != 0) // make sure this player has a valid ID, they shouldn't be added if they joined after the game started
-                readyList[id] = true;
+                clientData[id].Ready = true;
             else
                 SendMessage("Game has already started!");
         }
@@ -101,7 +102,7 @@ namespace PigLib
         public void ClientUnReady( int id )
         {
             if (id != 0)
-                readyList[id] = false;
+                clientData[id].Ready = false;
         }
 
         public void StartGame()
@@ -110,9 +111,9 @@ namespace PigLib
             if( clientCallbacks.Count >= 2 && clientCallbacks.Count <= 6 )
             {
                 int numReady = 0;
-                foreach ( bool flag in readyList.Values )
+                foreach ( KeyValuePair<int,CallBackInfo> kvp in clientData )
                 {
-                    if ( flag == true )
+                    if ( kvp.Value.Ready == true )
                         numReady++;
                 }
                 // we have an appropriate amount of players, all registered, and all ready to play
@@ -150,9 +151,9 @@ namespace PigLib
             foreach (KeyValuePair<int, ICallback> kvp in clientCallbacks)
             {
                 if (id == kvp.Key)
-                    clientCallbacks[id].ChangeUI(true);
+                    kvp.Value.ChangeUI(true);
                 else
-                    clientCallbacks[id].ChangeUI(false);
+                    kvp.Value.ChangeUI(false);
             }
         }
 
@@ -165,7 +166,7 @@ namespace PigLib
             //neverending loop here ( or until one of the players has 100 points)
                 //Note: Not sure how to make it wait for players
                 //enable that players UI, disable the others.
-                EnablePlayerUI(playerId);
+            EnablePlayerUI(playerId);
 
                 //Then player will roll dice until stuff happens (put in its own function maybe?)
                     //HOW DO WE WAIT FOR THE PLAYER?
