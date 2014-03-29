@@ -12,7 +12,7 @@ namespace PigLib
     public interface ICallback
     {
         [OperationContract(IsOneWay = true)]
-        void UpdateGui(CallBackInfo info);
+        void UpdateGui( CallBackInfo info);
         [OperationContract(IsOneWay = true)]
         void ShowMessage(string message);
         [OperationContract(IsOneWay = true)]
@@ -33,7 +33,7 @@ namespace PigLib
         [OperationContract(IsOneWay = true)]
         void StartGame();
         [OperationContract(IsOneWay = true)]
-        void Game();
+        void Roll(int clientId);
         
     }
 
@@ -46,7 +46,7 @@ namespace PigLib
         private int nextCallbackId = 1;
         private bool startGame = false; // when all clients are ready, flip this
         //private CallBackInfo info = new CallBackInfo();
-        private Dictionary<int, CallBackInfo> info = new Dictionary<int, CallBackInfo>();
+        private Dictionary<int, CallBackInfo> clientData = new Dictionary<int, CallBackInfo>();
 
         
 
@@ -57,15 +57,22 @@ namespace PigLib
         }
 
 
-        public int Roll()
+        public void Roll(int clientId)
         {
             var r = new Random();
             //shove everything to gui
             //need to populate an info object. Keep it global? make it when game is started!
-            
-            //foreach (ICallback cb in clientCallbacks.Values)
-                //cb.UpdateGui(info);
-            return r.Next(1, 6);
+            int roll = r.Next(1, 6);
+
+            clientData[clientId].DieRoll = roll;
+            clientData[clientId].BankedPoints += roll;
+
+            int x = 1;
+            foreach (ICallback cb in clientCallbacks.Values){
+                cb.UpdateGui(clientData[x]);
+                x++;
+            }
+           // return r.Next(1, 6);
 
         }
 

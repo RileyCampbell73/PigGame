@@ -89,8 +89,9 @@ namespace PigClient
             {
                 try
                 {
-                    
-                    //Update code goes here
+                
+
+        
                 }
                 catch (Exception ex)
                 {
@@ -143,6 +144,11 @@ namespace PigClient
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
+        }
+
+        private void buttonHit_Click(object sender, RoutedEventArgs e)
+        {
+            pig.Roll(callbackId);
         }
     }
 }
