@@ -31,7 +31,7 @@ namespace PigLib
         void ClientUnReady(int id);
         [OperationContract(IsOneWay = true)]
         void StartGame();
-
+        [OperationContract]
         void Game();
         
     }
@@ -44,6 +44,7 @@ namespace PigLib
         private Dictionary<int, bool> readyList = new Dictionary<int, bool>(); // hold the client's key and if that client is ready
         private int nextCallbackId = 1;
         private bool startGame = false; // when all clients are ready, flip this
+        //private CallBackInfo info;
 
         // C'tor
         public Pig()
@@ -51,6 +52,18 @@ namespace PigLib
             Console.WriteLine("Creating a Pig!");
         }
 
+
+        public int Roll()
+        {
+            var r = new Random();
+            //shove everything to gui
+            //need to populate an info object. Keep it global? make it when game is started!
+
+            //foreach (ICallback cb in clientCallbacks.Values)
+            //    cb.UpdateGui(info);
+            return r.Next(1, 6);
+
+        }
 
         public int RegisterForCallbacks()
         {
@@ -94,7 +107,9 @@ namespace PigLib
                 {
                     startGame = true;
                     SendMessage("Game Starting!");
-                    //Maybe have a method with a loop in it start from here?
+                    //construct the new info object
+                    //info = new CallBackInfo();
+                    //call the game method
 
                 }
             }
@@ -134,6 +149,8 @@ namespace PigLib
 
 
                 //Then player will roll dice until stuff happens (put in its own function maybe?)
+                    //HOW DO WE WAIT FOR THE PLAYER?
+                        //another loop and wait for a return code?
                 //When they are done, pass it to next player, end loop
             }
 

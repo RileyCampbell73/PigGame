@@ -80,6 +80,7 @@ namespace PigClient
             pig.ClientUnReady(callbackId);
         }
 
+        private delegate void ClientUpdateDelegate(CallBackInfo info);
         public void UpdateGui(CallBackInfo info)
         {
             //use this method to refresh everyones GUI?
@@ -99,7 +100,7 @@ namespace PigClient
             else
             {
                 // Only the main (dispatcher) thread can change the GUI
-                //this.Dispatcher.BeginInvoke(new ClientUpdateDelegate(UpdateGui), info);
+                this.Dispatcher.BeginInvoke(new ClientUpdateDelegate(UpdateGui), info);
             }
         }
 

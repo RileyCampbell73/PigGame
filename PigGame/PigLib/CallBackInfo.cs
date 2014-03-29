@@ -23,11 +23,11 @@ namespace PigLib
         public bool Ready { get; set;  }
 
 
-        public CallBackInfo(int d, int t, int b)
+        public CallBackInfo()
         {
-            DieRoll = d;
-            TotalPoints = t;
-            BankedPoints = b;
+            DieRoll = 0;
+            TotalPoints = 0;
+            BankedPoints = 0;
             Ready = false;
         }
 
