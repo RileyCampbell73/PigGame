@@ -14,11 +14,11 @@ namespace PigLib
     {
         //might need an object with ALL player data to pass to the client. Not sure how we should approach it.
         [DataMember]
-        public int DieRoll { get; private set; }
+        public int DieRoll { get; set; }
         [DataMember]
-        public int TotalPoints { get; private set; }
+        public int TotalPoints { get; set; }
         [DataMember]
-        public int BankedPoints { get; private set; }
+        public int BankedPoints { get; set; }
         [DataMember]
         public bool Ready { get; set;  }
 
