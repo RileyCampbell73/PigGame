@@ -64,13 +64,33 @@ namespace PigLib
             //need to populate an info object. Keep it global? make it when game is started!
             int roll = r.Next(1, 6);
 
-            clientData[clientId].DieRoll = roll;
-            clientData[clientId].BankedPoints += roll;
+            if (roll == 1)
+            {
+                clientData[clientId].DieRoll = roll;
+                clientData[clientId].BankedPoints = 0;
 
-            int x = 1;
-            foreach (ICallback cb in clientCallbacks.Values){
-                cb.UpdateGui(clientData[x]);
-                x++;
+                int x = 1;
+                foreach (ICallback cb in clientCallbacks.Values)
+                {
+                    cb.UpdateGui(clientData[x]);
+                    x++;
+                }
+
+                //change player turns
+                Game();
+            }
+            else
+            {
+
+                clientData[clientId].DieRoll = roll;
+                clientData[clientId].BankedPoints += roll;
+
+                int x = 1;
+                foreach (ICallback cb in clientCallbacks.Values)
+                {
+                    cb.UpdateGui(clientData[x]);
+                    x++;
+                }
             }
            // return r.Next(1, 6);
 
@@ -165,12 +185,17 @@ namespace PigLib
                     kvp.Value.ChangeUI(false);
             }
         }
-
+        int playerId = 0;
         //Just an idea, Not even sure this will work
         public void Game()
-        {       
+        {
+            playerId++;
+            if (playerId > clientData.Count)
+            {
+                playerId = 1;
+            }
             //Maybe have each player roll to find out who goes first, but for now just choose player 1
-            int playerId = 1; // we'll start with player 1 for now
+            //int playerId = 1; // we'll start with player 1 for now
             bool gameOn = false;
             //neverending loop here ( or until one of the players has 100 points)
                 //Note: Not sure how to make it wait for players
