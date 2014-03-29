@@ -15,7 +15,8 @@ namespace PigLib
         void UpdateGui(CallBackInfo info);
         [OperationContract(IsOneWay = true)]
         void ShowMessage(string message);
-        
+        [OperationContract(IsOneWay = true)]
+        void ChangeUI( bool b );
     }
 
     [ServiceContract(CallbackContract = typeof(ICallback))]
@@ -31,7 +32,7 @@ namespace PigLib
         void ClientUnReady(int id);
         [OperationContract(IsOneWay = true)]
         void StartGame();
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void Game();
         
     }
@@ -67,13 +68,18 @@ namespace PigLib
 
         public int RegisterForCallbacks()
         {
-            // Store the ICallback interface (client object) reference for 
-            // the client which is currently calling RegisterForCallbacks()
-            ICallback cb = OperationContext.Current.GetCallbackChannel<ICallback>();
-            clientCallbacks.Add(nextCallbackId, cb);
-            readyList.Add(nextCallbackId, false); // when they're first registered they won't be ready to start
+            if (!startGame)
+            {
+                // Store the ICallback interface (client object) reference for 
+                // the client which is currently calling RegisterForCallbacks()
+                ICallback cb = OperationContext.Current.GetCallbackChannel<ICallback>();
+                clientCallbacks.Add(nextCallbackId, cb);
+                readyList.Add(nextCallbackId, false); // when they're first registered they won't be ready to start
 
-            return nextCallbackId++;
+                return nextCallbackId++;
+            }
+            else
+                return 0;
         }
 
         public void UnregisterForCallbacks(int id)
@@ -83,12 +89,16 @@ namespace PigLib
 
         public void ClientReady( int id )
         {
-            readyList[id] = true;
+            if (id != 0) // make sure this player has a valid ID, they shouldn't be added if they joined after the game started
+                readyList[id] = true;
+            else
+                SendMessage("Game has already started!");
         }
 
         public void ClientUnReady( int id )
         {
-            readyList[id] = false;
+            if (id != 0)
+                readyList[id] = false;
         }
 
         public void StartGame()
@@ -110,7 +120,7 @@ namespace PigLib
                     //construct the new info object
                     //info = new CallBackInfo();
                     //call the game method
-
+                    Game();
                 }
             }
             else
@@ -131,28 +141,33 @@ namespace PigLib
             }
         }
 
+        // enables a player's UI, disables everyone elses
+        public void EnablePlayerUI( int id )
+        {
+            foreach (KeyValuePair<int, ICallback> kvp in clientCallbacks)
+            {
+                if (id == kvp.Key)
+                    clientCallbacks[id].ChangeUI(true);
+                else
+                    clientCallbacks[id].ChangeUI(false);
+            }
+        }
+
         //Just an idea, Not even sure this will work
         public void Game()
-        {
-
-            //Stop more clients from connecting.
-                //OR if game has started (the bool 'startGame') then disable the ready button in the client
-                // maybe they will be all disabled by default anyway
-                
-                //pick a player to start first. or default it to player 1
-                
-                    //neverending loop here ( or until one of the players has 100 points)
-            for (; ; )
-            {
+        {       
+            //Maybe have each player roll to find out who goes first, but for now just choose player 1
+            int playerId = 1; // we'll start with player 1 for now
+            bool gameOn = false;
+            //neverending loop here ( or until one of the players has 100 points)
                 //Note: Not sure how to make it wait for players
                 //enable that players UI, disable the others.
-
+                EnablePlayerUI(playerId);
 
                 //Then player will roll dice until stuff happens (put in its own function maybe?)
                     //HOW DO WE WAIT FOR THE PLAYER?
                         //another loop and wait for a return code?
                 //When they are done, pass it to next player, end loop
-            }
 
                     //after loop, display winner
                     // end game, or prep for another

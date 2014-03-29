@@ -88,7 +88,7 @@ namespace PigClient
             if (System.Threading.Thread.CurrentThread == this.Dispatcher.Thread)
             {
                 try
-               {
+                {
                     
                     //Update code goes here
                 }
@@ -119,6 +119,27 @@ namespace PigClient
                 }
             }
             catch (Exception ex )
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+
+        private delegate void EnableUIDelegate( bool b );
+        public void ChangeUI( bool enableUI )
+        {
+            try
+            {
+                if (System.Threading.Thread.CurrentThread == this.Dispatcher.Thread)
+                {
+                    buttonHit.IsEnabled = enableUI;
+                    buttonStay.IsEnabled = enableUI;
+                }
+                else
+                {
+                    this.Dispatcher.BeginInvoke(new EnableUIDelegate(ChangeUI), enableUI);
+                }
+            }
+            catch( Exception ex )
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
