@@ -89,9 +89,38 @@ namespace PigClient
             {
                 try
                 {
-                
+                    switch (info.DieRoll)
+                    {
+                        case 1:
+                            BitmapImage dieOne = new BitmapImage(new Uri(@"images/die_one.gif", UriKind.RelativeOrAbsolute));
+                            imgDie.Source = dieOne;
+                            break;
 
-        
+                        case 2:
+                            BitmapImage dieTwo = new BitmapImage(new Uri(@"images/die_two.gif", UriKind.RelativeOrAbsolute));
+                            imgDie.Source = dieTwo;
+                            break;
+
+                        case 3:
+                            BitmapImage dieThree = new BitmapImage(new Uri(@"images/die_three.gif", UriKind.RelativeOrAbsolute));
+                            imgDie.Source = dieThree;
+                            break;
+
+                        case 4:
+                            BitmapImage dieFour = new BitmapImage(new Uri(@"images/die_four.gif", UriKind.RelativeOrAbsolute));
+                            imgDie.Source = dieFour;
+                            break;
+
+                        case 5:
+                            BitmapImage dieFive = new BitmapImage(new Uri(@"images/die_five.gif", UriKind.RelativeOrAbsolute));
+                            imgDie.Source = dieFive;
+                            break;
+
+                        case 6:
+                            BitmapImage dieSix = new BitmapImage(new Uri(@"images/die_six.gif", UriKind.RelativeOrAbsolute));
+                            imgDie.Source = dieSix;
+                            break;
+                    }       
                 }
                 catch (Exception ex)
                 {
