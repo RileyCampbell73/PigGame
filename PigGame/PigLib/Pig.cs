@@ -17,6 +17,8 @@ namespace PigLib
         void ShowMessage(string message);
         [OperationContract(IsOneWay = true)]
         void ChangeUI( bool b );
+        [OperationContract(IsOneWay = true)]
+        void ResetUI();
     }
 
     [ServiceContract(CallbackContract = typeof(ICallback))]
@@ -34,7 +36,8 @@ namespace PigLib
         void StartGame();
         [OperationContract(IsOneWay = true)]
         void Roll(int clientId);
-        
+        [OperationContract(IsOneWay = true)]
+        void Stay(int clientId);
     }
 
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
@@ -48,25 +51,72 @@ namespace PigLib
         //private CallBackInfo info = new CallBackInfo();
         private Dictionary<int, CallBackInfo> clientData = new Dictionary<int, CallBackInfo>();
 
-        
-
         // C'tor
         public Pig()
         {
             Console.WriteLine("Creating a Pig!");
         }
 
+        public void Stay(int clientId)
+        {
+
+            clientData[clientId].TotalPoints += clientData[clientId].BankedPoints;
+            clientData[clientId].BankedPoints = 0;
+
+            bool gameEnd=false;
+            int winner = 0;
+            int x = 1;
+            foreach (ICallback cb in clientCallbacks.Values)
+            {
+                if (clientData[x].TotalPoints > 100)
+                {
+                    gameEnd = true;
+                    winner = x;
+                }
+                cb.UpdateGui(clientData[x]);
+                x++;
+            }
+
+            if (gameEnd == false)
+                //change player turns
+                Game();
+            else
+            {
+                GameEnd(winner);
+            }
+        }
+
+        private void GameEnd(int player){
+            SendMessage("Player " + player + " is the winner!");
+
+            //this loop resets all the players data for a new game
+            foreach (CallBackInfo stuff in clientData.Values)
+            {
+                stuff.BankedPoints = 0;
+                stuff.Ready = false;
+                stuff.TotalPoints = 0;
+                stuff.DieRoll = 0;
+            }
+            //this loop resets all the ui elements
+            foreach (ICallback cb in clientCallbacks.Values)
+            {
+                cb.ResetUI();
+            }
+        }
 
         public void Roll(int clientId)
         {
+            //for making random numbers
             var r = new Random();
-            //shove everything to gui
-            //need to populate an info object. Keep it global? make it when game is started!
+            //put a random number between 1 and 6 into this int.
             int roll = r.Next(1, 6);
 
+            //check to see if the roll is a 1
             if (roll == 1)
             {
+                //put data in clientData to be sent to client
                 clientData[clientId].DieRoll = roll;
+                //sets banked point to 0 because game rules =(
                 clientData[clientId].BankedPoints = 0;
 
                 int x = 1;
@@ -79,9 +129,8 @@ namespace PigLib
                 //change player turns
                 Game();
             }
-            else
+            else//if its not a one, add the die roll to the banked points for that player
             {
-
                 clientData[clientId].DieRoll = roll;
                 clientData[clientId].BankedPoints += roll;
 
@@ -92,8 +141,6 @@ namespace PigLib
                     x++;
                 }
             }
-           // return r.Next(1, 6);
-
         }
 
         public int RegisterForCallbacks()
@@ -150,9 +197,7 @@ namespace PigLib
                 {
                     startGame = true;
                     SendMessage("Game Starting!");
-                    //construct the new info object
-                    //info = new CallBackInfo();
-                    //call the game method
+                    //start with player turns
                     Game();
                 }
             }
@@ -189,28 +234,16 @@ namespace PigLib
         //Just an idea, Not even sure this will work
         public void Game()
         {
+           //sets player id to the next player
             playerId++;
+            //check to see if next player exceeds total players
             if (playerId > clientData.Count)
             {
+                //if it does, it sets it back to player one
                 playerId = 1;
             }
-            //Maybe have each player roll to find out who goes first, but for now just choose player 1
-            //int playerId = 1; // we'll start with player 1 for now
-            bool gameOn = false;
-            //neverending loop here ( or until one of the players has 100 points)
-                //Note: Not sure how to make it wait for players
-                //enable that players UI, disable the others.
+            //enable the current players turn and disable the rest
             EnablePlayerUI(playerId);
-
-                //Then player will roll dice until stuff happens (put in its own function maybe?)
-                    //HOW DO WE WAIT FOR THE PLAYER?
-                        //another loop and wait for a return code?
-                //When they are done, pass it to next player, end loop
-
-                    //after loop, display winner
-                    // end game, or prep for another
-
-
         }
 
     }

@@ -41,7 +41,7 @@
             </Grid>
         </GroupBox>
         <Button x:Name="buttonHit" Content="Hit" HorizontalAlignment="Left" Margin="169,303,0,0" VerticalAlignment="Top" Width="109" Height="37" IsEnabled="False" Click="buttonHit_Click"/>
-        <Button x:Name="buttonStay" Content="Stay" HorizontalAlignment="Left" Margin="309,303,0,0" VerticalAlignment="Top" Width="109" Height="37" IsEnabled="False"/>
+        <Button x:Name="buttonStay" Content="Stay" HorizontalAlignment="Left" Margin="309,303,0,0" VerticalAlignment="Top" Width="109" Height="37" IsEnabled="False" Click="buttonStay_Click"/>
         <GroupBox Header="Game Log" HorizontalAlignment="Left" Margin="169,358,0,0" VerticalAlignment="Top" Height="102" Width="249">
             <TextBlock x:Name="textBlockLog" />
         </GroupBox>

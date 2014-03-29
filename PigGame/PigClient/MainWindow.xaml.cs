@@ -154,6 +154,30 @@ namespace PigClient
             }
         }
 
+        private delegate void ResetUIDelegate();
+        public void ResetUI()
+        {
+            try
+            {
+                if (System.Threading.Thread.CurrentThread == this.Dispatcher.Thread)
+                {
+                    //reset the buttons and show check box
+                    buttonHit.IsEnabled = false;
+                    buttonStay.IsEnabled = false;
+                    checkBoxReady.IsEnabled = true;
+                    //ALSO NEED TO RESET TEXTBOXES.
+                }
+                else
+                {
+                    this.Dispatcher.BeginInvoke(new ResetUIDelegate(ResetUI));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+
         private delegate void EnableUIDelegate( bool b );
         public void ChangeUI( bool enableUI )
         {
@@ -178,6 +202,11 @@ namespace PigClient
         private void buttonHit_Click(object sender, RoutedEventArgs e)
         {
             pig.Roll(callbackId);
+        }
+
+        private void buttonStay_Click(object sender, RoutedEventArgs e)
+        {
+            pig.Stay(callbackId);
         }
     }
 }
