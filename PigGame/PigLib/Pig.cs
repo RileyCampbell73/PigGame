@@ -45,7 +45,10 @@ namespace PigLib
         private Dictionary<int, bool> readyList = new Dictionary<int, bool>(); // hold the client's key and if that client is ready
         private int nextCallbackId = 1;
         private bool startGame = false; // when all clients are ready, flip this
-        //private CallBackInfo info;
+        //private CallBackInfo info = new CallBackInfo();
+        private Dictionary<int, CallBackInfo> info = new Dictionary<int, CallBackInfo>();
+
+        
 
         // C'tor
         public Pig()
@@ -59,9 +62,9 @@ namespace PigLib
             var r = new Random();
             //shove everything to gui
             //need to populate an info object. Keep it global? make it when game is started!
-
+            
             //foreach (ICallback cb in clientCallbacks.Values)
-            //    cb.UpdateGui(info);
+                //cb.UpdateGui(info);
             return r.Next(1, 6);
 
         }
