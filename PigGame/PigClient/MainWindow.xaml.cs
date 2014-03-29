@@ -30,6 +30,7 @@ namespace PigClient
     {
         private IPig pig = null;
         private int callbackId = 0;
+        private int currentPlayerId = 0;
 
         public MainWindow()
         {
@@ -80,8 +81,8 @@ namespace PigClient
             pig.ClientUnReady(callbackId);
         }
 
-        private delegate void ClientUpdateDelegate(CallBackInfo info);
-        public void UpdateGui(CallBackInfo info)
+        private delegate void ClientUpdateDelegate(CallBackInfo info, int id);
+        public void UpdateGui(CallBackInfo info, int id)
         {
             //use this method to refresh everyones GUI?
             
@@ -89,38 +90,21 @@ namespace PigClient
             {
                 try
                 {
-                    switch (info.DieRoll)
+                    // if the player has changed
+                    if (id != currentPlayerId)
                     {
-                        case 1:
-                            BitmapImage dieOne = new BitmapImage(new Uri(@"images/die_one.gif", UriKind.RelativeOrAbsolute));
-                            imgDie.Source = dieOne;
-                            break;
-
-                        case 2:
-                            BitmapImage dieTwo = new BitmapImage(new Uri(@"images/die_two.gif", UriKind.RelativeOrAbsolute));
-                            imgDie.Source = dieTwo;
-                            break;
-
-                        case 3:
-                            BitmapImage dieThree = new BitmapImage(new Uri(@"images/die_three.gif", UriKind.RelativeOrAbsolute));
-                            imgDie.Source = dieThree;
-                            break;
-
-                        case 4:
-                            BitmapImage dieFour = new BitmapImage(new Uri(@"images/die_four.gif", UriKind.RelativeOrAbsolute));
-                            imgDie.Source = dieFour;
-                            break;
-
-                        case 5:
-                            BitmapImage dieFive = new BitmapImage(new Uri(@"images/die_five.gif", UriKind.RelativeOrAbsolute));
-                            imgDie.Source = dieFive;
-                            break;
-
-                        case 6:
-                            BitmapImage dieSix = new BitmapImage(new Uri(@"images/die_six.gif", UriKind.RelativeOrAbsolute));
-                            imgDie.Source = dieSix;
-                            break;
-                    }       
+                        textBoxLog.AppendText("Player " + id + "'s turn\n");
+                        scrollViewer.ScrollToBottom();
+                        currentPlayerId = id;
+                        // change the border for the groupbox for whatever player is player
+                        // have to figure out a clean way to get the correct groupBox for the current player
+                        //groupBoxPlayer1.BorderBrush = new SolidColorBrush(Colors.Red);
+                    }
+                    // change the die picture based on whatever the player rolled
+                    changeDiePicture(info.DieRoll);
+                    // update the log based on the roll
+                    textBoxLog.AppendText( "Player " + id + ": rolled a " + info.DieRoll + "\n" );
+                    scrollViewer.ScrollToBottom();
                 }
                 catch (Exception ex)
                 {
@@ -130,7 +114,7 @@ namespace PigClient
             else
             {
                 // Only the main (dispatcher) thread can change the GUI
-                this.Dispatcher.BeginInvoke(new ClientUpdateDelegate(UpdateGui), info);
+                this.Dispatcher.BeginInvoke(new ClientUpdateDelegate(UpdateGui), info, id);
             }
         }
 
@@ -162,7 +146,7 @@ namespace PigClient
                 if (System.Threading.Thread.CurrentThread == this.Dispatcher.Thread)
                 {
                     //reset the buttons and show check box
-                    buttonHit.IsEnabled = false;
+                    buttonRoll.IsEnabled = false;
                     buttonStay.IsEnabled = false;
                     checkBoxReady.IsEnabled = true;
                     //ALSO NEED TO RESET TEXTBOXES.
@@ -185,7 +169,7 @@ namespace PigClient
             {
                 if (System.Threading.Thread.CurrentThread == this.Dispatcher.Thread)
                 {
-                    buttonHit.IsEnabled = enableUI;
+                    buttonRoll.IsEnabled = enableUI;
                     buttonStay.IsEnabled = enableUI;
                 }
                 else
@@ -199,7 +183,7 @@ namespace PigClient
             }
         }
 
-        private void buttonHit_Click(object sender, RoutedEventArgs e)
+        private void buttonRoll_Click(object sender, RoutedEventArgs e)
         {
             pig.Roll(callbackId);
         }
@@ -207,6 +191,42 @@ namespace PigClient
         private void buttonStay_Click(object sender, RoutedEventArgs e)
         {
             pig.Stay(callbackId);
+        }
+
+        private void changeDiePicture(int diceRoll)
+        {
+            switch (diceRoll)
+            {
+                case 1:
+                    BitmapImage dieOne = new BitmapImage(new Uri(@"images/die_one.gif", UriKind.RelativeOrAbsolute));
+                    imgDie.Source = dieOne;
+                    break;
+
+                case 2:
+                    BitmapImage dieTwo = new BitmapImage(new Uri(@"images/die_two.gif", UriKind.RelativeOrAbsolute));
+                    imgDie.Source = dieTwo;
+                    break;
+
+                case 3:
+                    BitmapImage dieThree = new BitmapImage(new Uri(@"images/die_three.gif", UriKind.RelativeOrAbsolute));
+                    imgDie.Source = dieThree;
+                    break;
+
+                case 4:
+                    BitmapImage dieFour = new BitmapImage(new Uri(@"images/die_four.gif", UriKind.RelativeOrAbsolute));
+                    imgDie.Source = dieFour;
+                    break;
+
+                case 5:
+                    BitmapImage dieFive = new BitmapImage(new Uri(@"images/die_five.gif", UriKind.RelativeOrAbsolute));
+                    imgDie.Source = dieFive;
+                    break;
+
+                case 6:
+                    BitmapImage dieSix = new BitmapImage(new Uri(@"images/die_six.gif", UriKind.RelativeOrAbsolute));
+                    imgDie.Source = dieSix;
+                    break;
+            } 
         }
     }
 }

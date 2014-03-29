@@ -1,51 +1,75 @@
 ﻿<Window x:Class="PigClient.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Pig Game!" Height="500" Width="600" Closing="Window_Closing">
+        Title="Pig Game!" Height="500" Width="630" Closing="Window_Closing">
     <Grid>
-        <Image x:Name="imgDie" HorizontalAlignment="Left" Height="100" Margin="246,146,0,0" VerticalAlignment="Top" Width="100"/>
-        <GroupBox x:Name="groupBoxPlayer2" Header="Player 2" HorizontalAlignment="Left" Margin="47,112,0,0" VerticalAlignment="Top" Height="78" Width="122">
+        <Image x:Name="imgDie" HorizontalAlignment="Left" Height="100" Margin="268,152,0,0" VerticalAlignment="Top" Width="100"/>
+
+        <GroupBox x:Name="groupBoxPlayer1" Header="Player 1" HorizontalAlignment="Left" Margin="26,201,0,0" VerticalAlignment="Top" Height="103" Width="141">
             <Grid Margin="0,10,0,2">
-                <TextBox x:Name="textBoxPlayer2" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="47,3,0,0" IsEnabled="False"/>
-                <Label Content="Points: " HorizontalAlignment="Left" Width="47" Margin="0,0,0,13"/>
+                <TextBox x:Name="textBoxPlayerPoints1" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="58,3,0,0" IsEnabled="False"/>
+                <Label Content="Current: " HorizontalAlignment="Left" Width="53" Margin="0,0,0,44"/>
+                <TextBox x:Name="textBoxPlayerTotal1" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="58,25,0,0" IsEnabled="False"/>
+                <Label Content="Banked: " HorizontalAlignment="Left" Width="53" Margin="0,25,0,16"/>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="groupBoxPlayer3" Header="Player 3" HorizontalAlignment="Left" Margin="169,34,0,0" VerticalAlignment="Top" Height="78" Width="122">
+
+        <GroupBox x:Name="groupBoxPlayer2" Header="Player 2" HorizontalAlignment="Left" Margin="26,93,0,0" VerticalAlignment="Top" Height="103" Width="140">
             <Grid Margin="0,10,0,2">
-                <TextBox x:Name="textBoxPlayer3" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="47,3,0,0" IsEnabled="False"/>
-                <Label Content="Points: " HorizontalAlignment="Left" Width="47" Margin="0,0,0,13"/>
+                <TextBox x:Name="textBoxPlayerPoints2" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="58,3,0,0" IsEnabled="False"/>
+                <Label Content="Current: " HorizontalAlignment="Left" Width="53" Margin="0,0,0,44"/>
+                <TextBox x:Name="textBoxPlayerTotal2" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="58,25,0,0" IsEnabled="False"/>
+                <Label Content="Banked: " HorizontalAlignment="Left" Width="53" Margin="0,25,0,16"/>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="groupBoxPlayer4" Header="Player 4" HorizontalAlignment="Left" Margin="296,34,0,0" VerticalAlignment="Top" Height="78" Width="122">
+
+        <GroupBox x:Name="groupBoxPlayer3" Header="Player 3" HorizontalAlignment="Left" Margin="170,-2,0,0" VerticalAlignment="Top" Height="102" Width="140">
             <Grid Margin="0,10,0,2">
-                <TextBox x:Name="textBoxPlayer4" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="47,3,0,0" IsEnabled="False"/>
-                <Label Content="Points: " HorizontalAlignment="Left" Width="47" Margin="0,0,0,13"/>
+                <TextBox x:Name="textBoxPlayerPoints3" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="58,3,0,0" IsEnabled="False"/>
+                <Label Content="Current: " HorizontalAlignment="Left" Width="53" Margin="0,0,0,44"/>
+                <TextBox x:Name="textBoxPlayerTotal3" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="58,25,0,0" IsEnabled="False"/>
+                <Label Content="Banked: " HorizontalAlignment="Left" Width="53" Margin="0,25,0,16"/>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="groupBoxPlayer5" Header="Player 5" HorizontalAlignment="Left" Margin="419,112,0,0" VerticalAlignment="Top" Height="78" Width="122">
+
+        <GroupBox x:Name="groupBoxPlayer4" Header="Player 4" HorizontalAlignment="Left" Margin="322,-3,0,0" VerticalAlignment="Top" Height="103" Width="141">
             <Grid Margin="0,10,0,2">
-                <TextBox x:Name="textBoxPlayer5" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="47,3,0,0" IsEnabled="False"/>
-                <Label Content="Points: " HorizontalAlignment="Left" Width="47" Margin="0,0,0,13"/>
+                <TextBox x:Name="textBoxPlayerPoints4" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="58,3,0,0" IsEnabled="False"/>
+                <Label Content="Current: " HorizontalAlignment="Left" Width="53" Margin="0,0,0,44"/>
+                <TextBox x:Name="textBoxPlayerTotal4" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="58,25,0,0" IsEnabled="False"/>
+                <Label Content="Banked: " HorizontalAlignment="Left" Width="53" Margin="0,25,0,16"/>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="groupBoxPlayer" Header="Player 1" HorizontalAlignment="Left" Margin="47,195,0,0" VerticalAlignment="Top" Height="78" Width="122">
+
+        <GroupBox x:Name="groupBoxPlayer5" Header="Player 5" HorizontalAlignment="Left" Margin="468,96,0,0" VerticalAlignment="Top" Height="102" Width="142">
             <Grid Margin="0,10,0,2">
-                <TextBox x:Name="textBoxPlayer1" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="47,3,0,0" IsEnabled="False"/>
-                <Label Content="Points: " HorizontalAlignment="Left" Width="47" Margin="0,0,0,13"/>
+                <TextBox x:Name="textBoxPlayerPoints5" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="58,3,0,0" IsEnabled="False"/>
+                <Label Content="Current: " HorizontalAlignment="Left" Width="53" Margin="0,0,0,44"/>
+                <TextBox x:Name="textBoxPlayerTotal5" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="58,25,0,0" IsEnabled="False"/>
+                <Label Content="Banked: " HorizontalAlignment="Left" Width="53" Margin="0,25,0,16"/>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="groupBoxPlayer6" Header="Player 6" HorizontalAlignment="Left" Margin="419,195,0,0" VerticalAlignment="Top" Height="78" Width="122">
+
+        <GroupBox x:Name="groupBoxPlayer6" Header="Player 6" HorizontalAlignment="Left" Margin="468,198,0,0" VerticalAlignment="Top" Height="103" Width="141">
             <Grid Margin="0,10,0,2">
-                <TextBox x:Name="textBoxPlayer6" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="47,3,0,0" IsEnabled="False"/>
-                <Label Content="Points: " HorizontalAlignment="Left" Width="47" Margin="0,0,0,13"/>
+                <TextBox x:Name="textBoxPlayerPoints6" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="58,3,0,0" IsEnabled="False"/>
+                <Label Content="Current: " HorizontalAlignment="Left" Width="53" Margin="0,0,0,44"/>
+                <TextBox x:Name="textBoxPlayerTotal6" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="61" Margin="58,25,0,0" IsEnabled="False"/>
+                <Label Content="Banked: " HorizontalAlignment="Left" Width="53" Margin="0,25,0,16"/>
             </Grid>
         </GroupBox>
-        <Button x:Name="buttonHit" Content="Hit" HorizontalAlignment="Left" Margin="169,303,0,0" VerticalAlignment="Top" Width="109" Height="37" IsEnabled="False" Click="buttonHit_Click"/>
-        <Button x:Name="buttonStay" Content="Stay" HorizontalAlignment="Left" Margin="309,303,0,0" VerticalAlignment="Top" Width="109" Height="37" IsEnabled="False" Click="buttonStay_Click"/>
-        <GroupBox Header="Game Log" HorizontalAlignment="Left" Margin="169,358,0,0" VerticalAlignment="Top" Height="102" Width="249">
-            <TextBlock x:Name="textBlockLog" />
+
+        <Button x:Name="buttonRoll" Content="Roll" HorizontalAlignment="Left" Margin="187,303,0,0" VerticalAlignment="Top" Width="109" Height="37" IsEnabled="False" Click="buttonRoll_Click"/>
+
+        <Button x:Name="buttonStay" Content="Stay" HorizontalAlignment="Left" Margin="340,303,0,0" VerticalAlignment="Top" Width="110" Height="37" IsEnabled="False" Click="buttonStay_Click"/>
+
+        <GroupBox Header="Game Log" HorizontalAlignment="Left" Margin="187,358,0,0" VerticalAlignment="Top" Height="102" Width="263">
+            <ScrollViewer x:Name="scrollViewer">
+                <TextBox x:Name="textBoxLog" />
+            </ScrollViewer>
         </GroupBox>
-        <CheckBox x:Name="checkBoxReady" Content="Ready to start?" HorizontalAlignment="Left" Margin="436,303,0,0" VerticalAlignment="Top" Checked="checkBoxReady_Checked" Unchecked="checkBoxReady_Unchecked"/>
+
+        <CheckBox x:Name="checkBoxReady" Content="Ready to start?" HorizontalAlignment="Left" Margin="468,306,0,0" VerticalAlignment="Top" Checked="checkBoxReady_Checked" Unchecked="checkBoxReady_Unchecked"/>
 
     </Grid>
 </Window>

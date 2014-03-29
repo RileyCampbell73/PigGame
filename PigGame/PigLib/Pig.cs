@@ -12,7 +12,7 @@ namespace PigLib
     public interface ICallback
     {
         [OperationContract(IsOneWay = true)]
-        void UpdateGui( CallBackInfo info);
+        void UpdateGui( CallBackInfo info, int id );
         [OperationContract(IsOneWay = true)]
         void ShowMessage(string message);
         [OperationContract(IsOneWay = true)]
@@ -59,21 +59,26 @@ namespace PigLib
 
         public void Stay(int clientId)
         {
-
             clientData[clientId].TotalPoints += clientData[clientId].BankedPoints;
             clientData[clientId].BankedPoints = 0;
 
             bool gameEnd=false;
             int winner = 0;
             int x = 1;
+
+            CallBackInfo temp = new CallBackInfo();
+            temp.DieRoll = clientData[clientId].DieRoll;
+            temp.BankedPoints = 0;
+            temp.TotalPoints = clientData[clientId].TotalPoints;
+
             foreach (ICallback cb in clientCallbacks.Values)
             {
-                if (clientData[x].TotalPoints > 100)
+                if (clientData[x].TotalPoints > 10)
                 {
                     gameEnd = true;
                     winner = x;
                 }
-                cb.UpdateGui(clientData[x]);
+                cb.UpdateGui(temp, clientId);
                 x++;
             }
 
@@ -119,10 +124,15 @@ namespace PigLib
                 //sets banked point to 0 because game rules =(
                 clientData[clientId].BankedPoints = 0;
 
+                CallBackInfo temp = new CallBackInfo();
+                temp.DieRoll = roll;
+                temp.BankedPoints = 0;
+                temp.TotalPoints = clientData[clientId].TotalPoints;
+
                 int x = 1;
                 foreach (ICallback cb in clientCallbacks.Values)
                 {
-                    cb.UpdateGui(clientData[x]);
+                    cb.UpdateGui(temp, clientId);
                     x++;
                 }
 
@@ -134,10 +144,15 @@ namespace PigLib
                 clientData[clientId].DieRoll = roll;
                 clientData[clientId].BankedPoints += roll;
 
+                CallBackInfo temp = new CallBackInfo();
+                temp.DieRoll = roll;
+                temp.BankedPoints = 0;
+                temp.TotalPoints = clientData[clientId].TotalPoints;
+
                 int x = 1;
                 foreach (ICallback cb in clientCallbacks.Values)
                 {
-                    cb.UpdateGui(clientData[x]);
+                    cb.UpdateGui(temp, clientId);
                     x++;
                 }
             }
