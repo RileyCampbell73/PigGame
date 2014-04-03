@@ -75,7 +75,7 @@ namespace PigLib
 
             foreach (ICallback cb in clientCallbacks.Values)
             {
-                if (clientData[x].TotalPoints >= 10)
+                if (clientData[x].TotalPoints >= 50)
                 {
                     gameEnd = true;
                     winner = x;
