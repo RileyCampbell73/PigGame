@@ -31,6 +31,7 @@ namespace PigClient
         private IPig pig = null;
         private int callbackId = 0;
         private int currentPlayerId = 0;
+        private int totalPlayers = 0;
 
         public MainWindow()
         {
@@ -69,6 +70,7 @@ namespace PigClient
             {
                 pig.ClientReady(callbackId);
                 pig.StartGame(); // send a message to the service which will check that we have enough players that are all ready
+
             }
             catch (Exception ex)
             {
@@ -90,21 +92,108 @@ namespace PigClient
             {
                 try
                 {
-                    // if the player has changed
-                    if (id != currentPlayerId)
+                    //// if the player has changed
+                    //if (id != currentPlayerId)
+                    //{
+                    //    textBoxLog.AppendText("Player " + id + "'s turn\n");
+                    //    scrollViewer.ScrollToBottom();
+                    //    currentPlayerId = id;
+                    //    // change the border for the groupbox for whatever player is player
+                    //    // have to figure out a clean way to get the correct groupBox for the current player
+
+                    //    //PROBLEM WITH THIS IS HOW TO WE SET THE PREVIOUS PLAYERS GROUPBOX TO THE DEFAULT COLOUR?
+                    //    switch (id)
+                    //    {
+                    //        case 1:
+                    //            groupBoxPlayer1.BorderBrush = new SolidColorBrush(Colors.Red);
+                    //            groupBoxPlayer2.BorderBrush = new SolidColorBrush(Colors.Gray);
+                    //            groupBoxPlayer3.BorderBrush = new SolidColorBrush(Colors.Gray);
+                    //            break;
+                    //        case 2:
+                    //            groupBoxPlayer2.BorderBrush = new SolidColorBrush(Colors.Red);
+                    //            groupBoxPlayer1.BorderBrush = new SolidColorBrush(Colors.Gray);
+                    //            groupBoxPlayer3.BorderBrush = new SolidColorBrush(Colors.Gray);
+                    //            break;
+                    //    }
+                        
+                    //}
+
+                    if (info.DieRoll > 1)
                     {
-                        textBoxLog.AppendText("Player " + id + "'s turn\n");
+                        // change the die picture based on whatever the player rolled
+                        changeDiePicture(info.DieRoll);
+                        
+                        switch (id)
+                        {
+                            case 1:
+                                textBoxPlayerPoints1.Text = Convert.ToString(info.BankedPoints);
+                                break;
+
+                            case 2:
+                                textBoxPlayerPoints2.Text = Convert.ToString(info.BankedPoints);
+                                break;
+                        }
+
+                        // update the log based on the roll
+                        textBoxLog.AppendText("Player " + id + ": rolled a " + info.DieRoll + "\n"); 
                         scrollViewer.ScrollToBottom();
-                        currentPlayerId = id;
-                        // change the border for the groupbox for whatever player is player
-                        // have to figure out a clean way to get the correct groupBox for the current player
-                        //groupBoxPlayer1.BorderBrush = new SolidColorBrush(Colors.Red);
                     }
-                    // change the die picture based on whatever the player rolled
-                    changeDiePicture(info.DieRoll);
-                    // update the log based on the roll
-                    textBoxLog.AppendText( "Player " + id + ": rolled a " + info.DieRoll + "\n" );
-                    scrollViewer.ScrollToBottom();
+                    else if (info.DieRoll == 1) //if die roll is 0 then that means the user is staying
+                    {
+                        // change the die picture based on whatever the player rolled
+                        changeDiePicture(info.DieRoll);
+
+                        switch (id)
+                        {
+                            case 1:
+                                textBoxPlayerPoints1.Text = Convert.ToString(info.BankedPoints);
+                                textBoxPlayerTotal1.Text = Convert.ToString(info.TotalPoints);
+                                break;
+
+                            case 2:
+                                textBoxPlayerPoints2.Text = Convert.ToString(info.BankedPoints);
+                                textBoxPlayerTotal2.Text = Convert.ToString(info.TotalPoints);
+                                break;
+                        }
+
+                        // update the log based on the roll
+                        textBoxLog.AppendText("Player " + id + ": rolled a " + info.DieRoll + "Oh No!\n");
+                        if (id + 1 > totalPlayers)
+                        {
+                            id = 1;
+                            textBoxLog.AppendText("Player " + id + "'s turn!\n");
+                        }
+                        else
+                            textBoxLog.AppendText("Player " + (id + 1) + "'s turn!\n");
+
+                        scrollViewer.ScrollToBottom();
+                    }
+                    else//if die roll is 0 then that means the user is staying
+                    {
+                        switch (id)
+                        {
+                            case 1:
+                                textBoxPlayerPoints1.Text = Convert.ToString(info.BankedPoints);
+                                textBoxPlayerTotal1.Text = Convert.ToString(info.TotalPoints);
+                                break;
+
+                            case 2:
+                                textBoxPlayerPoints2.Text = Convert.ToString(info.BankedPoints);
+                                textBoxPlayerTotal2.Text = Convert.ToString(info.TotalPoints);
+                                break;
+                        }
+
+                        textBoxLog.AppendText("Player " + id + ": is staying.\n");
+                        if (id + 1 > totalPlayers)
+                        {
+                            id = 1;
+                            textBoxLog.AppendText("Player " + id + "'s turn!\n");
+                        }
+                        else
+                        textBoxLog.AppendText("Player " + (id + 1)  + "'s turn!\n");
+                    }
+
+
                 }
                 catch (Exception ex)
                 {
@@ -137,7 +226,18 @@ namespace PigClient
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
+           private delegate void StartGameDelegate(int t);
+           public void StartGame(int total)
+           {
+               
+                   totalPlayers = total;
+                //set all text boxes to 0 and dice to blank
 
+               
+
+           }
+               
+            
         private delegate void ResetUIDelegate();
         public void ResetUI()
         {
@@ -149,7 +249,15 @@ namespace PigClient
                     buttonRoll.IsEnabled = false;
                     buttonStay.IsEnabled = false;
                     checkBoxReady.IsEnabled = true;
-                    //ALSO NEED TO RESET TEXTBOXES.
+                    checkBoxReady.IsChecked = false;
+                    //ALSO NEED TO RESET ALL OF THOSE TEXTBOXES.
+                        //shot not......
+                    textBoxPlayerPoints1.Text = "";
+                    textBoxPlayerTotal1.Text = "";
+
+                    textBoxPlayerPoints2.Text = "";
+                    textBoxPlayerTotal2.Text = "";
+                    
                 }
                 else
                 {
@@ -192,6 +300,8 @@ namespace PigClient
         {
             pig.Stay(callbackId);
         }
+
+
 
         private void changeDiePicture(int diceRoll)
         {

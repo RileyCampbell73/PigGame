@@ -19,6 +19,8 @@ namespace PigLib
         void ChangeUI( bool b );
         [OperationContract(IsOneWay = true)]
         void ResetUI();
+        [OperationContract(IsOneWay = true)]
+        void StartGame(int totalPlayers);
     }
 
     [ServiceContract(CallbackContract = typeof(ICallback))]
@@ -67,7 +69,7 @@ namespace PigLib
             int x = 1;
 
             CallBackInfo temp = new CallBackInfo();
-            temp.DieRoll = clientData[clientId].DieRoll;
+            temp.DieRoll = 0;
             temp.BankedPoints = 0;
             temp.TotalPoints = clientData[clientId].TotalPoints;
 
@@ -135,25 +137,27 @@ namespace PigLib
                     cb.UpdateGui(temp, clientId);
                     x++;
                 }
-
                 //change player turns
                 Game();
             }
             else//if its not a one, add the die roll to the banked points for that player
             {
                 clientData[clientId].DieRoll = roll;
+
                 clientData[clientId].BankedPoints += roll;
 
                 CallBackInfo temp = new CallBackInfo();
                 temp.DieRoll = roll;
-                temp.BankedPoints = 0;
+                temp.BankedPoints = clientData[clientId].BankedPoints;
                 temp.TotalPoints = clientData[clientId].TotalPoints;
 
-                int x = 1;
+             
+
                 foreach (ICallback cb in clientCallbacks.Values)
                 {
                     cb.UpdateGui(temp, clientId);
-                    x++;
+                   
+
                 }
             }
         }
@@ -213,6 +217,11 @@ namespace PigLib
                     startGame = true;
                     SendMessage("Game Starting!");
                     //start with player turns
+
+                    foreach (ICallback cb in clientCallbacks.Values)
+                    {
+                        cb.StartGame(clientData.Count());
+                    }
                     Game();
                 }
             }
