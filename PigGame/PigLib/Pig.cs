@@ -75,7 +75,7 @@ namespace PigLib
 
             foreach (ICallback cb in clientCallbacks.Values)
             {
-                if (clientData[x].TotalPoints > 10)
+                if (clientData[x].TotalPoints >= 10)
                 {
                     gameEnd = true;
                     winner = x;
@@ -94,7 +94,7 @@ namespace PigLib
         }
 
         private void GameEnd(int player){
-            SendMessage("Player " + player + " is the winner!");
+            SendMessage("Player " + player + " is the winner with " +clientData[player].TotalPoints +" points!");
 
             //this loop resets all the players data for a new game
             foreach (CallBackInfo stuff in clientData.Values)

@@ -128,9 +128,20 @@ namespace PigClient
                             case 1:
                                 textBoxPlayerPoints1.Text = Convert.ToString(info.BankedPoints);
                                 break;
-
                             case 2:
                                 textBoxPlayerPoints2.Text = Convert.ToString(info.BankedPoints);
+                                break;
+                            case 3:
+                                textBoxPlayerPoints3.Text = Convert.ToString(info.BankedPoints);
+                                break;
+                            case 4:
+                                textBoxPlayerPoints4.Text = Convert.ToString(info.BankedPoints);
+                                break;
+                            case 5:
+                                textBoxPlayerPoints5.Text = Convert.ToString(info.BankedPoints);
+                                break;
+                            case 6:
+                                textBoxPlayerPoints6.Text = Convert.ToString(info.BankedPoints);
                                 break;
                         }
 
@@ -153,6 +164,26 @@ namespace PigClient
                             case 2:
                                 textBoxPlayerPoints2.Text = Convert.ToString(info.BankedPoints);
                                 textBoxPlayerTotal2.Text = Convert.ToString(info.TotalPoints);
+                                break;
+
+                            case 3:
+                                textBoxPlayerPoints3.Text = Convert.ToString(info.BankedPoints);
+                                textBoxPlayerTotal3.Text = Convert.ToString(info.TotalPoints);
+                                break;
+
+                            case 4:
+                                textBoxPlayerPoints4.Text = Convert.ToString(info.BankedPoints);
+                                textBoxPlayerTotal4.Text = Convert.ToString(info.TotalPoints);
+                                break;
+
+                            case 5:
+                                textBoxPlayerPoints5.Text = Convert.ToString(info.BankedPoints);
+                                textBoxPlayerTotal5.Text = Convert.ToString(info.TotalPoints);
+                                break;
+
+                            case 6:
+                                textBoxPlayerPoints6.Text = Convert.ToString(info.BankedPoints);
+                                textBoxPlayerTotal6.Text = Convert.ToString(info.TotalPoints);
                                 break;
                         }
 
@@ -229,15 +260,42 @@ namespace PigClient
            private delegate void StartGameDelegate(int t);
            public void StartGame(int total)
            {
-               
-                   totalPlayers = total;
-                //set all text boxes to 0 and dice to blank
 
-               
+               if (System.Threading.Thread.CurrentThread == this.Dispatcher.Thread)
+               {
+                   totalPlayers = total;
+                   //set all text boxes to 0 and dice to blank
+
+                   imgDie.Source = null;
+
+                   checkBoxReady.IsEnabled = false;
+
+                   textBoxPlayerPoints1.Text = "";
+                   textBoxPlayerTotal1.Text = "";
+
+                   textBoxPlayerPoints2.Text = "";
+                   textBoxPlayerTotal2.Text = "";
+
+                   textBoxPlayerPoints3.Text = "";
+                   textBoxPlayerTotal3.Text = "";
+
+                   textBoxPlayerPoints4.Text = "";
+                   textBoxPlayerTotal4.Text = "";
+
+                   textBoxPlayerPoints5.Text = "";
+                   textBoxPlayerTotal5.Text = "";
+
+                   textBoxPlayerPoints6.Text = "";
+                   textBoxPlayerTotal6.Text = "";
+               }
+               else
+               {
+                  // this.Dispatcher.BeginInvoke(new MessageDelegate(ShowMessage), message);
+                   this.Dispatcher.BeginInvoke(new StartGameDelegate(StartGame), total);
+               }
 
            }
                
-            
         private delegate void ResetUIDelegate();
         public void ResetUI()
         {
@@ -250,14 +308,7 @@ namespace PigClient
                     buttonStay.IsEnabled = false;
                     checkBoxReady.IsEnabled = true;
                     checkBoxReady.IsChecked = false;
-                    //ALSO NEED TO RESET ALL OF THOSE TEXTBOXES.
-                        //shot not......
-                    textBoxPlayerPoints1.Text = "";
-                    textBoxPlayerTotal1.Text = "";
 
-                    textBoxPlayerPoints2.Text = "";
-                    textBoxPlayerTotal2.Text = "";
-                    
                 }
                 else
                 {
