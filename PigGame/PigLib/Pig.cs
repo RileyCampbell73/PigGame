@@ -50,7 +50,7 @@ namespace PigLib
         private int nextCallbackId = 1;
         private bool startGame = false; // when all clients are ready, flip this
         private Dictionary<int, CallBackInfo> clientData = new Dictionary<int, CallBackInfo>();
-        private int numWinningPoints = 10;
+        private int numWinningPoints = 100;
         private int playerId;
 
         // C'tor
