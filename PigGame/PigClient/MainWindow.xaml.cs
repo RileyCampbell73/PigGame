@@ -102,19 +102,57 @@ namespace PigClient
                     //    // have to figure out a clean way to get the correct groupBox for the current player
 
                     //    //PROBLEM WITH THIS IS HOW TO WE SET THE PREVIOUS PLAYERS GROUPBOX TO THE DEFAULT COLOUR?
-                    //    switch (id)
-                    //    {
-                    //        case 1:
-                    //            groupBoxPlayer1.BorderBrush = new SolidColorBrush(Colors.Red);
-                    //            groupBoxPlayer2.BorderBrush = new SolidColorBrush(Colors.Gray);
-                    //            groupBoxPlayer3.BorderBrush = new SolidColorBrush(Colors.Gray);
-                    //            break;
-                    //        case 2:
-                    //            groupBoxPlayer2.BorderBrush = new SolidColorBrush(Colors.Red);
-                    //            groupBoxPlayer1.BorderBrush = new SolidColorBrush(Colors.Gray);
-                    //            groupBoxPlayer3.BorderBrush = new SolidColorBrush(Colors.Gray);
-                    //            break;
-                    //    }
+                    switch (id)
+                    {
+                        case 1:
+                            groupBoxPlayer1.BorderBrush = new SolidColorBrush(Colors.Red);
+                            groupBoxPlayer2.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer3.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer4.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer5.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer6.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            break;
+                        case 2:
+                            groupBoxPlayer1.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer2.BorderBrush = new SolidColorBrush(Colors.Red);
+                            groupBoxPlayer3.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer4.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer5.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer6.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            break;
+                        case 3:
+                            groupBoxPlayer1.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer2.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer3.BorderBrush = new SolidColorBrush(Colors.Red);
+                            groupBoxPlayer4.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer5.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer6.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            break;
+                        case 4:
+                            groupBoxPlayer1.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer2.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer3.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer4.BorderBrush = new SolidColorBrush(Colors.Red);
+                            groupBoxPlayer5.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer6.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            break;
+                        case 5:
+                            groupBoxPlayer1.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer2.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer3.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer4.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer5.BorderBrush = new SolidColorBrush(Colors.Red);
+                            groupBoxPlayer6.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            break;
+                        case 6:
+                            groupBoxPlayer1.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer2.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer3.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer4.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer5.BorderBrush = new SolidColorBrush(Colors.Gray);
+                            groupBoxPlayer6.BorderBrush = new SolidColorBrush(Colors.Red);
+                            break;
+                    }
                         
                     //}
 
@@ -149,7 +187,7 @@ namespace PigClient
                         textBoxLog.AppendText("Player " + id + ": rolled a " + info.DieRoll + "\n"); 
                         scrollViewer.ScrollToBottom();
                     }
-                    else if (info.DieRoll == 1) //if die roll is 0 then that means the user is staying
+                    else if (info.DieRoll == 1)
                     {
                         // change the die picture based on whatever the player rolled
                         changeDiePicture(info.DieRoll);
@@ -321,7 +359,7 @@ namespace PigClient
             }
         }
 
-        private delegate void EnableUIDelegate( bool b );
+        private delegate void ChangeUIDelegate( bool b );
         public void ChangeUI( bool enableUI )
         {
             try
@@ -333,7 +371,7 @@ namespace PigClient
                 }
                 else
                 {
-                    this.Dispatcher.BeginInvoke(new EnableUIDelegate(ChangeUI), enableUI);
+                    this.Dispatcher.BeginInvoke(new ChangeUIDelegate(ChangeUI), enableUI);
                 }
             }
             catch( Exception ex )
@@ -344,15 +382,27 @@ namespace PigClient
 
         private void buttonRoll_Click(object sender, RoutedEventArgs e)
         {
-            pig.Roll(callbackId);
+            try
+            {
+                pig.Roll(callbackId);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
         }
 
         private void buttonStay_Click(object sender, RoutedEventArgs e)
         {
-            pig.Stay(callbackId);
+            try
+            {
+                pig.Stay(callbackId);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
         }
-
-
 
         private void changeDiePicture(int diceRoll)
         {

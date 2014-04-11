@@ -47,11 +47,11 @@ namespace PigLib
     {
         //dictionary for clients
         private Dictionary<int, ICallback> clientCallbacks = new Dictionary<int, ICallback>();
-        //private Dictionary<int, bool> readyList = new Dictionary<int, bool>(); // hold the client's key and if that client is ready
         private int nextCallbackId = 1;
         private bool startGame = false; // when all clients are ready, flip this
-        //private CallBackInfo info = new CallBackInfo();
         private Dictionary<int, CallBackInfo> clientData = new Dictionary<int, CallBackInfo>();
+        private int numWinningPoints = 100;
+        private int playerId;
 
         // C'tor
         public Pig()
@@ -64,32 +64,28 @@ namespace PigLib
             clientData[clientId].TotalPoints += clientData[clientId].BankedPoints;
             clientData[clientId].BankedPoints = 0;
 
-            bool gameEnd=false;
-            int winner = 0;
-            int x = 1;
-
             CallBackInfo temp = new CallBackInfo();
             temp.DieRoll = 0;
             temp.BankedPoints = 0;
             temp.TotalPoints = clientData[clientId].TotalPoints;
 
-            foreach (ICallback cb in clientCallbacks.Values)
-            {
-                if (clientData[x].TotalPoints >= 50)
-                {
-                    gameEnd = true;
-                    winner = x;
-                }
-                cb.UpdateGui(temp, clientId);
-                x++;
-            }
-
-            if (gameEnd == false)
-                //change player turns
-                Game();
+            //foreach (ICallback cb in clientCallbacks.Values)
+            //{
+            //    if (clientData[x].TotalPoints >= 50)
+            //    {
+            //        gameEnd = true;
+            //        winner = x;
+            //    }
+            //    cb.UpdateGui(temp, clientId);
+            //    x++;
+            //}
+            if (clientData[clientId].TotalPoints >= numWinningPoints)
+                GameEnd(clientId);
             else
             {
-                GameEnd(winner);
+                foreach( ICallback cb in clientCallbacks.Values )
+                    cb.UpdateGui(temp, clientId);
+                Game();
             }
         }
 
@@ -131,12 +127,11 @@ namespace PigLib
                 temp.BankedPoints = 0;
                 temp.TotalPoints = clientData[clientId].TotalPoints;
 
-                int x = 1;
                 foreach (ICallback cb in clientCallbacks.Values)
                 {
                     cb.UpdateGui(temp, clientId);
-                    x++;
                 }
+
                 //change player turns
                 Game();
             }
@@ -151,13 +146,9 @@ namespace PigLib
                 temp.BankedPoints = clientData[clientId].BankedPoints;
                 temp.TotalPoints = clientData[clientId].TotalPoints;
 
-             
-
                 foreach (ICallback cb in clientCallbacks.Values)
                 {
                     cb.UpdateGui(temp, clientId);
-                   
-
                 }
             }
         }
@@ -184,6 +175,10 @@ namespace PigLib
         {
             clientCallbacks.Remove(id);
             clientData.Remove(id);
+            if (clientCallbacks.Count < 2)
+                SendMessage("Too many players have left!  Game over!");
+            // disable the one player's UI who is left
+            clientCallbacks.First().Value.ChangeUI(false);
         }
 
         public void ClientReady( int id )
@@ -222,6 +217,8 @@ namespace PigLib
                     {
                         cb.StartGame(clientData.Count());
                     }
+                    //set playerId so we know who should start first;
+                    playerId = clientCallbacks.Keys.First();
                     Game();
                 }
             }
@@ -254,20 +251,37 @@ namespace PigLib
                     kvp.Value.ChangeUI(false);
             }
         }
-        int playerId = 0;
-        //Just an idea, Not even sure this will work
+        
         public void Game()
         {
-           //sets player id to the next player
-            playerId++;
-            //check to see if next player exceeds total players
-            if (playerId > clientData.Count)
-            {
-                //if it does, it sets it back to player one
-                playerId = 1;
-            }
-            //enable the current players turn and disable the rest
             EnablePlayerUI(playerId);
+
+            bool foundNextPlayer = false;
+            foreach(int i in clientCallbacks.Keys)
+            {
+                if (i > playerId)
+                {
+                    playerId = i;
+                    foundNextPlayer = true;
+                    break;
+                }
+            }
+            // if we didn't find another player, we already enabled the last player's UI
+            if (!foundNextPlayer)
+            {
+                playerId = clientCallbacks.Keys.First();
+            }
+            
+            //sets player id to the next player
+            //playerId++;
+            //check to see if next player exceeds total players
+            //if (playerId > clientData.Count)
+            //{
+            //    //if it does, it sets it back to player one
+            //    playerId = 1;
+            //}
+            //enable the current players turn and disable the rest
+            //EnablePlayerUI(playerId);
         }
 
     }
