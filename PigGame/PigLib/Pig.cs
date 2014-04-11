@@ -50,7 +50,7 @@ namespace PigLib
         private int nextCallbackId = 1;
         private bool startGame = false; // when all clients are ready, flip this
         private Dictionary<int, CallBackInfo> clientData = new Dictionary<int, CallBackInfo>();
-        private int numWinningPoints = 100;
+        private int numWinningPoints = 10;
         private int playerId;
 
         // C'tor
@@ -176,9 +176,20 @@ namespace PigLib
             clientCallbacks.Remove(id);
             clientData.Remove(id);
             if (clientCallbacks.Count < 2)
+            {
                 SendMessage("Too many players have left!  Game over!");
-            // disable the one player's UI who is left
-            clientCallbacks.First().Value.ChangeUI(false);
+                // disable the one player's UI who is left
+                clientCallbacks.First().Value.ChangeUI(false);
+            }
+            //else
+            //{
+            //    // if the player left who was currently supposed to be playing, move on to the next player
+            //    if (playerId == id)
+            //    {
+            //        playerId = clientCallbacks.Keys.First(); // update the playerId to the next player
+            //        Game(); // keep the game going
+            //    }
+            //}
         }
 
         public void ClientReady( int id )
