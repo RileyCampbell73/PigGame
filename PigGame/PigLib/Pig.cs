@@ -9,6 +9,8 @@ using System.ServiceModel;
 namespace PigLib
 {
 
+    //The public interface of ICallBack
+        //these will be seen by the Client 
     public interface ICallback
     {
         [OperationContract(IsOneWay = true)]
@@ -23,6 +25,8 @@ namespace PigLib
         void StartGame(int totalPlayers);
     }
 
+    //The public interface of IPig
+     //these will be seen by the Pig Class 
     [ServiceContract(CallbackContract = typeof(ICallback))]
     public interface IPig
     {
@@ -49,6 +53,7 @@ namespace PigLib
         private Dictionary<int, ICallback> clientCallbacks = new Dictionary<int, ICallback>();
         private int nextCallbackId = 1;
         private bool startGame = false; // when all clients are ready, flip this
+        //dictionary for the players data
         private Dictionary<int, CallBackInfo> clientData = new Dictionary<int, CallBackInfo>();
         private int numWinningPoints = 100;
         private int playerId;
@@ -59,8 +64,10 @@ namespace PigLib
             Console.WriteLine("Creating a Pig!");
         }
 
-        public void Stay(int clientId)
+        //this method is for when players want to stay.
+        public void Stay(int clientId)  
         {
+            //Takes the points they have accrued and adds them to that players total points
             clientData[clientId].TotalPoints += clientData[clientId].BankedPoints;
             clientData[clientId].BankedPoints = 0;
 
@@ -69,26 +76,19 @@ namespace PigLib
             temp.BankedPoints = 0;
             temp.TotalPoints = clientData[clientId].TotalPoints;
 
-            //foreach (ICallback cb in clientCallbacks.Values)
-            //{
-            //    if (clientData[x].TotalPoints >= 50)
-            //    {
-            //        gameEnd = true;
-            //        winner = x;
-            //    }
-            //    cb.UpdateGui(temp, clientId);
-            //    x++;
-            //}
+            //If a player has gotten over t100 points then they win the game
             if (clientData[clientId].TotalPoints >= numWinningPoints)
                 GameEnd(clientId);
             else
             {
+                //Then updates all the GUI's
                 foreach( ICallback cb in clientCallbacks.Values )
                     cb.UpdateGui(temp, clientId);
                 Game();
             }
         }
 
+        //This method is for when the game ends.    
         private void GameEnd(int player){
             SendMessage("Player " + player + " is the winner with " +clientData[player].TotalPoints +" points!");
 
@@ -108,6 +108,7 @@ namespace PigLib
             startGame = false; // so new players can join
         }
 
+        //This method is for when a player chooses to Roll
         public void Roll(int clientId)
         {
             //for making random numbers
@@ -128,6 +129,7 @@ namespace PigLib
                 temp.BankedPoints = 0;
                 temp.TotalPoints = clientData[clientId].TotalPoints;
 
+                //update the players 
                 foreach (ICallback cb in clientCallbacks.Values)
                 {
                     cb.UpdateGui(temp, clientId);
@@ -146,7 +148,7 @@ namespace PigLib
                 temp.DieRoll = roll;
                 temp.BankedPoints = clientData[clientId].BankedPoints;
                 temp.TotalPoints = clientData[clientId].TotalPoints;
-
+                //update the players 
                 foreach (ICallback cb in clientCallbacks.Values)
                 {
                     cb.UpdateGui(temp, clientId);
@@ -154,6 +156,7 @@ namespace PigLib
             }
         }
 
+        //Registers new players for callbacks
         public int RegisterForCallbacks()
         {
             if (!startGame)
@@ -163,15 +166,15 @@ namespace PigLib
                 ICallback cb = OperationContext.Current.GetCallbackChannel<ICallback>();
                 clientCallbacks.Add(nextCallbackId, cb);
                 CallBackInfo info = new CallBackInfo();
-                clientData.Add(nextCallbackId, info);
-                //readyList.Add(nextCallbackId, false); // when they're first registered they won't be ready to start
+                clientData.Add(nextCallbackId, info)
 
                 return nextCallbackId++;
             }
             else
                 return 0;
         }
-
+        
+        //unregisters players when they close their clients
         public void UnregisterForCallbacks(int id)
         {
             clientCallbacks.Remove(id);
@@ -182,17 +185,16 @@ namespace PigLib
                 // disable the one player's UI who is left
                 clientCallbacks.First().Value.ChangeUI(false);
             }
-            //else
-            //{
-            //    // if the player left who was currently supposed to be playing, move on to the next player
-            //    if (playerId == id)
-            //    {
-            //        playerId = clientCallbacks.Keys.First(); // update the playerId to the next player
-            //        Game(); // keep the game going
-            //    }
-            //}
+            else
+            {
+                // if the player left who was currently supposed to be playing, move on to the next player
+                if (playerId == id)
+                    Game(); // keep the game going
+                
+            }
         }
 
+        //method for when a client is ready to start the game
         public void ClientReady( int id )
         {
             if (id != 0) // make sure this player has a valid ID, they shouldn't be added if they joined after the game started
@@ -201,12 +203,14 @@ namespace PigLib
                 SendMessage("Game has already started!");
         }
 
+        //method for when a client is NOT ready to start the game
         public void ClientUnReady( int id )
         {
             if (id != 0)
                 clientData[id].Ready = false;
         }
 
+        //Method to start the game for all the players and lock out any other players so they cannot join part way through
         public void StartGame()
         {
             // make sure we have an appropriate amount of players
@@ -230,7 +234,7 @@ namespace PigLib
                         cb.StartGame(clientData.Count());
                     }
                     //set playerId so we know who should start first;
-                    playerId = clientCallbacks.Keys.First();
+                    playerId = 0;
                     Game();
                 }
             }
@@ -264,10 +268,10 @@ namespace PigLib
             }
         }
         
+        //this method is for the game logic
+            //it makes turn advance to the next player
         public void Game()
         {
-            EnablePlayerUI(playerId);
-
             bool foundNextPlayer = false;
             foreach(int i in clientCallbacks.Keys)
             {
@@ -283,17 +287,8 @@ namespace PigLib
             {
                 playerId = clientCallbacks.Keys.First();
             }
-            
-            //sets player id to the next player
-            //playerId++;
-            //check to see if next player exceeds total players
-            //if (playerId > clientData.Count)
-            //{
-            //    //if it does, it sets it back to player one
-            //    playerId = 1;
-            //}
-            //enable the current players turn and disable the rest
-            //EnablePlayerUI(playerId);
+
+            EnablePlayerUI(playerId);
         }
 
     }
