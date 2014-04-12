@@ -226,7 +226,8 @@ namespace PigClient
                         }
 
                         // update the log based on the roll
-                        textBoxLog.AppendText("Player " + id + ": rolled a " + info.DieRoll + "Oh No!\n");
+                        textBoxLog.AppendText("Player " + id + ": rolled a " + info.DieRoll + " Oh No!\n");
+                        //**************************************
                         if (id + 1 > totalPlayers)
                         {
                             id = 1;

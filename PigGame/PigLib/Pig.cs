@@ -105,14 +105,15 @@ namespace PigLib
             {
                 cb.ResetUI();
             }
+            startGame = false; // so new players can join
         }
 
         public void Roll(int clientId)
         {
             //for making random numbers
             var r = new Random();
-            //put a random number between 1 and 6 into this int.
-            int roll = r.Next(1, 6);
+            //put a random number between 1 and 6 into this int. (range is exclusive, so we'll never actually roll a 7)
+            int roll = r.Next(1, 7);
 
             //check to see if the roll is a 1
             if (roll == 1)
