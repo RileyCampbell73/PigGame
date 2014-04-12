@@ -21,6 +21,8 @@ namespace PigLib
         void ResetUI();
         [OperationContract(IsOneWay = true)]
         void StartGame(int totalPlayers);
+        [OperationContract(IsOneWay = true)]
+        void UpdatePlayerId(int newId);
     }
 
     [ServiceContract(CallbackContract = typeof(ICallback))]
@@ -182,23 +184,21 @@ namespace PigLib
                 // disable the one player's UI who is left
                 clientCallbacks.First().Value.ChangeUI(false);
             }
-            //else
-            //{
-            //    // if the player left who was currently supposed to be playing, move on to the next player
-            //    if (playerId == id)
-            //    {
-            //        playerId = clientCallbacks.Keys.First(); // update the playerId to the next player
-            //        Game(); // keep the game going
-            //    }
-            //}
+            else
+            {
+                // if the player left who was currently supposed to be playing, move on to the next player
+                if (playerId == id)
+                {
+                    playerId = clientCallbacks.Keys.First(); // update the playerId to the next player
+                    Game(); // keep the game going
+                }
+            }
         }
 
         public void ClientReady( int id )
         {
             if (id != 0) // make sure this player has a valid ID, they shouldn't be added if they joined after the game started
                 clientData[id].Ready = true;
-            else
-                SendMessage("Game has already started!");
         }
 
         public void ClientUnReady( int id )
@@ -223,14 +223,17 @@ namespace PigLib
                 {
                     startGame = true;
                     SendMessage("Game Starting!");
+                    
+                    // just in case people have joined and left and left holes in our Id's, shuffle the players so we have no gaps
+                    removeIdGaps();
+                    
                     //start with player turns
-
                     foreach (ICallback cb in clientCallbacks.Values)
                     {
                         cb.StartGame(clientData.Count());
                     }
                     //set playerId so we know who should start first;
-                    playerId = clientCallbacks.Keys.First();
+                    playerId = 0;
                     Game();
                 }
             }
@@ -242,12 +245,12 @@ namespace PigLib
 
         }
 
-        // this allows us to send a message to one or all clients, if the id is 0 we'll show the message to everyone
-        public void SendMessage( string message, int id = 0 )
+        // this allows us to send a message to one or all clients, if the id is -1 we'll show the message to everyone
+        public void SendMessage( string message, int id = -1 )
         {
             foreach ( KeyValuePair<int,ICallback> kvp in clientCallbacks )
             {
-                if (id == kvp.Key || id == 0)
+                if (id == kvp.Key || id == -1)
                     kvp.Value.ShowMessage(message); // ShowMessage written in the client
             }
         }
@@ -266,8 +269,6 @@ namespace PigLib
         
         public void Game()
         {
-            EnablePlayerUI(playerId);
-
             bool foundNextPlayer = false;
             foreach(int i in clientCallbacks.Keys)
             {
@@ -283,7 +284,8 @@ namespace PigLib
             {
                 playerId = clientCallbacks.Keys.First();
             }
-            
+
+            EnablePlayerUI(playerId);
             //sets player id to the next player
             //playerId++;
             //check to see if next player exceeds total players
@@ -294,6 +296,37 @@ namespace PigLib
             //}
             //enable the current players turn and disable the rest
             //EnablePlayerUI(playerId);
+        }
+
+        // helper to remove gaps in id's to be used between games.
+        // this is because if we end up having an id over 6 our client UI will be messed up
+        private void removeIdGaps()
+        {
+            // create new dictionaries and fill them with the old data, with new Id's that don't have gaps
+            int i = 1;
+            Dictionary<int,ICallback> newCallbacks = new Dictionary<int,ICallback>();
+            foreach( KeyValuePair<int, ICallback> cb in clientCallbacks )
+            {
+                newCallbacks.Add(i++, cb.Value);
+            }
+
+            i = 1;
+            Dictionary<int, CallBackInfo> newClientData = new Dictionary<int, CallBackInfo>();
+            foreach (KeyValuePair<int, CallBackInfo> cbi in clientData)
+            {
+                newClientData.Add(i++, cbi.Value);
+            }
+
+            // feed the new dictionaries into our global objects and reset the next client id so we can keep adding new players with correct Id's
+            clientCallbacks = newCallbacks;
+            clientData = newClientData;
+            nextCallbackId = clientCallbacks.Keys.Last() + 1;
+
+            // Let each player know about their new Id
+            foreach( KeyValuePair<int, ICallback> cb in clientCallbacks )
+            {
+                cb.Value.UpdatePlayerId(cb.Key);
+            }
         }
 
     }

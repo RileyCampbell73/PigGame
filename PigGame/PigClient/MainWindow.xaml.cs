@@ -30,7 +30,6 @@ namespace PigClient
     {
         private IPig pig = null;
         private int callbackId = 0;
-        private int currentPlayerId = 0;
         private int totalPlayers = 0;
 
         public MainWindow()
@@ -47,6 +46,13 @@ namespace PigClient
 
                 // Regsister this client for the callbacks service
                 callbackId = pig.RegisterForCallbacks();
+                
+                // If they join after the game is started, this player will not be included in the game
+                if( callbackId == 0 )
+                {
+                    MessageBox.Show("Game has already started");
+                    this.Close();
+                }
 
                 //updateCardCounts();
 
@@ -262,8 +268,6 @@ namespace PigClient
                         else
                         textBoxLog.AppendText("Player " + (id + 1)  + "'s turn!\n");
                     }
-
-
                 }
                 catch (Exception ex)
                 {
@@ -302,6 +306,9 @@ namespace PigClient
 
                if (System.Threading.Thread.CurrentThread == this.Dispatcher.Thread)
                {
+                   // since it's possible for the player's Id to have changed (if some players join and leave before or between games), change the title so that the player knows.
+                   this.Title = "Hello Player " + callbackId;
+
                    totalPlayers = total;
                    //set all text boxes to 0 and dice to blank
 
@@ -379,6 +386,12 @@ namespace PigClient
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
+        }
+
+        // update the player's Id if it needs to change (it will if people leave between or before games)
+        public void UpdatePlayerId( int newId )
+        {
+            callbackId = newId;
         }
 
         private void buttonRoll_Click(object sender, RoutedEventArgs e)
