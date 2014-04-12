@@ -36,6 +36,7 @@ namespace PigClient
         {
             InitializeComponent();
 
+            //Initialization Code
             try
             {
                 // Configure the Endpoint details
@@ -54,8 +55,6 @@ namespace PigClient
                     this.Close();
                 }
 
-                //updateCardCounts();
-
                 this.Title = "Hello Player " + callbackId;
             }
             catch (Exception ex)
@@ -64,12 +63,15 @@ namespace PigClient
             }
         }
 
+        //this event runs when the client is closed
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (callbackId != 0 && pig != null)
+                //unregister the client for call backs
                 pig.UnregisterForCallbacks(callbackId);
         }
 
+        //this event runs when the checkbox is checked
         private void checkBoxReady_Checked(object sender, RoutedEventArgs e)
         {
             try
@@ -78,36 +80,42 @@ namespace PigClient
                 pig.StartGame(); // send a message to the service which will check that we have enough players that are all ready
 
             }
+            catch(CommunicationObjectFaultedException ex){
+                MessageBox.Show ("The server has been shut down. Please restart the server");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message);
+                MessageBox.Show("Error: " + ex);
+            }
+        }
+        //this event runs when the checkbox is unchecked
+        private void checkBoxReady_Unchecked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                pig.ClientUnReady(callbackId);
+            }
+                //catch an error if the server is not online
+            catch (CommunicationObjectFaultedException ex)
+            {
+                MessageBox.Show("The server has been shut down. Please restart the server");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex);
             }
         }
 
-        private void checkBoxReady_Unchecked(object sender, RoutedEventArgs e)
-        {
-            pig.ClientUnReady(callbackId);
-        }
-
+        //this method updates the GUI for all clients
         private delegate void ClientUpdateDelegate(CallBackInfo info, int id);
         public void UpdateGui(CallBackInfo info, int id)
         {
-            //use this method to refresh everyones GUI?
-            
+
             if (System.Threading.Thread.CurrentThread == this.Dispatcher.Thread)
             {
                 try
                 {
-                    //// if the player has changed
-                    //if (id != currentPlayerId)
-                    //{
-                    //    textBoxLog.AppendText("Player " + id + "'s turn\n");
-                    //    scrollViewer.ScrollToBottom();
-                    //    currentPlayerId = id;
-                    //    // change the border for the groupbox for whatever player is player
-                    //    // have to figure out a clean way to get the correct groupBox for the current player
-
-                    //    //PROBLEM WITH THIS IS HOW TO WE SET THE PREVIOUS PLAYERS GROUPBOX TO THE DEFAULT COLOUR?
+                    //this statment changes the group box colour of the current player
                     switch (id)
                     {
                         case 1:
@@ -233,7 +241,7 @@ namespace PigClient
 
                         // update the log based on the roll
                         textBoxLog.AppendText("Player " + id + ": rolled a " + info.DieRoll + " Oh No!\n");
-                        //**************************************
+                        
                         if (id + 1 > totalPlayers)
                         {
                             id = 1;
@@ -281,6 +289,7 @@ namespace PigClient
             }
         }
 
+        //method for sending messages to the client
         private delegate void MessageDelegate(string s);
         public void ShowMessage( string message )
         {
@@ -300,6 +309,8 @@ namespace PigClient
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
+
+            //this method is for starting the game 
            private delegate void StartGameDelegate(int t);
            public void StartGame(int total)
            {
@@ -336,12 +347,12 @@ namespace PigClient
                }
                else
                {
-                  // this.Dispatcher.BeginInvoke(new MessageDelegate(ShowMessage), message);
                    this.Dispatcher.BeginInvoke(new StartGameDelegate(StartGame), total);
                }
 
            }
                
+        //this method resets the UI
         private delegate void ResetUIDelegate();
         public void ResetUI()
         {
@@ -367,6 +378,7 @@ namespace PigClient
             }
         }
 
+        //This method is changing the UI depending whos turn it is
         private delegate void ChangeUIDelegate( bool b );
         public void ChangeUI( bool enableUI )
         {
@@ -394,30 +406,41 @@ namespace PigClient
             callbackId = newId;
         }
 
+        //this event is called when the RollButton is clicked
         private void buttonRoll_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 pig.Roll(callbackId);
             }
+            catch (CommunicationObjectFaultedException ex)
+            {
+                MessageBox.Show("The server has been shut down. Please restart the server");
+            }
             catch(Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
 
+        //this event is called when the Stay button is clicked
         private void buttonStay_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 pig.Stay(callbackId);
             }
+            catch (CommunicationObjectFaultedException ex)
+            {
+                MessageBox.Show("The server has been shut down. Please restart the server");
+            }
             catch(Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
 
+        //this method is for changing the die picture in the client
         private void changeDiePicture(int diceRoll)
         {
             switch (diceRoll)
