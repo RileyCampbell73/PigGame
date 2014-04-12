@@ -1,4 +1,10 @@
-﻿using System;
+﻿///File Name: MainWindow.xaml.ca
+///Authors: Jamie Haig, Riley Campbell
+///Date: 4/11/2014
+///Version 1.00.00
+///Purpose: This is a client for a game of Pig.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

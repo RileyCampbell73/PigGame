@@ -1,4 +1,10 @@
-﻿using System;
+﻿///File Name: Program.cs
+///Authors: Jamie Haig, Riley Campbell
+///Date: 4/11/2014
+///Version 1.00.00
+///Purpose: This class represents the service that clients connect to.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
