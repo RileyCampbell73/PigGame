@@ -173,7 +173,7 @@ namespace PigLib
                 ICallback cb = OperationContext.Current.GetCallbackChannel<ICallback>();
                 clientCallbacks.Add(nextCallbackId, cb);
                 CallBackInfo info = new CallBackInfo();
-                clientData.Add(nextCallbackId, info)
+                clientData.Add(nextCallbackId, info);
 
                 return nextCallbackId++;
             }
